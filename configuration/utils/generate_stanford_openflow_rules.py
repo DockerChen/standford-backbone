@@ -19,6 +19,9 @@ Created on Mar 31, 2012
 
 @author: Peyman Kazemian
 '''
+import sys, os
+sys.path.append("../")
+
 from config_parser.transfer_function_to_openflow import OpenFlow_Rule_Generator
 from config_parser.cisco_router_parser import ciscoRouter
 from headerspace.tf import TF

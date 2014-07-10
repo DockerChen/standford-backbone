@@ -155,7 +155,7 @@ class OpenFlow_Rule_Generator(object):
         return openflow_entry
     
     def generate_of_rules(self,filename):
-        f = open("../utils/stanford_openflow_rules/%s"%filename,'w')
+        f = open("../work/stanford_openflow_rules/%s"%filename,'w')
         rules = []
         for rule in self.tf.rules:
             of_rule = self.parse_rule(rule)
