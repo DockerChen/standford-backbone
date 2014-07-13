@@ -49,8 +49,10 @@ class StanfordTopo( Topo ):
 
     def __init__( self ):
         # Read topology info
-        ports = self.load_ports(self.PORT_MAP_FILENAME)        
+        ports = self.load_ports(self.PORT_MAP_FILENAME)
+        #print ports    
         links = self.load_topology(self.TOPO_FILENAME)
+        print links
         switches = ports.keys()
 
         # Add default members to class.
