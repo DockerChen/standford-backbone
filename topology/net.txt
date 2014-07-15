@@ -1,0 +1,270 @@
+# Output from `mininet> net`
+# Topology of the emulated Stanford-backbone network
+c0
+dummy_controller
+s1 lo:  s1-eth1:s1007-eth1 s1-eth2:h17-eth0 s1-eth3:s1001-eth1 s1-eth4:h18-eth0 s1-eth5:h19-eth0 s1-eth6:h20-eth0 s1-eth7:h21-eth0 s1-eth8:h22-eth0 s1-eth9:h23-eth0 s1-eth10:h24-eth0 s1-eth11:h25-eth0 s1-eth12:h26-eth0 s1-eth13:h27-eth0 s1-eth14:h28-eth0 s1-eth15:h29-eth0 s1-eth16:h30-eth0 s1-eth17:h31-eth0 s1-eth18:h32-eth0 s1-eth19:s2-eth12 s1-eth20:s1003-eth1 s1-eth21:s1000-eth1 s1-eth22:h33-eth0 s1-eth23:h34-eth0 s1-eth24:h35-eth0 s1-eth25:h36-eth0 s1-eth26:h37-eth0 s1-eth27:h38-eth0 s1-eth28:h39-eth0 s1-eth29:h40-eth0 s1-eth30:h41-eth0 s1-eth31:h42-eth0 s1-eth32:s1006-eth1 s1-eth33:h43-eth0 s1-eth34:s15-eth6 s1-eth35:h44-eth0 s1-eth36:h45-eth0
+s2 lo:  s2-eth1:h46-eth0 s2-eth2:h47-eth0 s2-eth3:h48-eth0 s2-eth4:s1009-eth1 s2-eth5:s1002-eth1 s2-eth6:h49-eth0 s2-eth7:h50-eth0 s2-eth8:h51-eth0 s2-eth9:s1004-eth1 s2-eth10:s15-eth35 s2-eth11:h52-eth0 s2-eth12:s1-eth19 s2-eth13:s1005-eth1 s2-eth14:h53-eth0 s2-eth15:h54-eth0 s2-eth16:h55-eth0 s2-eth17:h56-eth0 s2-eth18:h57-eth0 s2-eth19:s1008-eth1 s2-eth20:h58-eth0 s2-eth21:h59-eth0 s2-eth22:h60-eth0 s2-eth23:h61-eth0
+s3 lo:  s3-eth1:s1009-eth2 s3-eth2:h62-eth0 s3-eth3:h63-eth0 s3-eth4:h64-eth0 s3-eth5:h65-eth0 s3-eth6:h66-eth0 s3-eth7:h67-eth0 s3-eth8:h68-eth0 s3-eth9:h69-eth0 s3-eth10:s1007-eth2 s3-eth11:h70-eth0 s3-eth12:h71-eth0 s3-eth13:h72-eth0 s3-eth14:h73-eth0 s3-eth15:h74-eth0 s3-eth16:s4-eth13 s3-eth17:h75-eth0
+s4 lo:  s4-eth1:s1001-eth4 s4-eth2:h76-eth0 s4-eth3:h77-eth0 s4-eth4:h78-eth0 s4-eth5:h79-eth0 s4-eth6:h80-eth0 s4-eth7:h81-eth0 s4-eth8:h82-eth0 s4-eth9:h83-eth0 s4-eth10:h84-eth0 s4-eth11:s1004-eth4 s4-eth12:h85-eth0 s4-eth13:s3-eth16 s4-eth14:h86-eth0 s4-eth15:h87-eth0 s4-eth16:h88-eth0
+s5 lo:  s5-eth1:s1008-eth2 s5-eth2:h89-eth0 s5-eth3:h90-eth0 s5-eth4:h91-eth0 s5-eth5:h92-eth0 s5-eth6:s1003-eth2 s5-eth7:s6-eth7 s5-eth8:h93-eth0
+s6 lo:  s6-eth1:s1006-eth4 s6-eth2:h94-eth0 s6-eth3:h95-eth0 s6-eth4:h96-eth0 s6-eth5:h97-eth0 s6-eth6:s1005-eth5 s6-eth7:s5-eth7 s6-eth8:h98-eth0
+s7 lo:  s7-eth1:s1002-eth2 s7-eth2:h99-eth0 s7-eth3:h100-eth0 s7-eth4:s1000-eth2 s7-eth5:s8-eth6 s7-eth6:h101-eth0 s7-eth7:h102-eth0 s7-eth8:h103-eth0 s7-eth9:h104-eth0 s7-eth10:h105-eth0 s7-eth11:h106-eth0 s7-eth12:h107-eth0 s7-eth13:h108-eth0 s7-eth14:h109-eth0 s7-eth15:h110-eth0 s7-eth16:h111-eth0 s7-eth17:h112-eth0 s7-eth18:h113-eth0 s7-eth19:h114-eth0 s7-eth20:h115-eth0 s7-eth21:h116-eth0 s7-eth22:h117-eth0 s7-eth23:h118-eth0 s7-eth24:h119-eth0 s7-eth25:h120-eth0 s7-eth26:h121-eth0 s7-eth27:h122-eth0 s7-eth28:h123-eth0
+s8 lo:  s8-eth1:s1006-eth2 s8-eth2:h124-eth0 s8-eth3:h125-eth0 s8-eth4:h126-eth0 s8-eth5:s1005-eth3 s8-eth6:s7-eth5 s8-eth7:h127-eth0 s8-eth8:h128-eth0 s8-eth9:h129-eth0 s8-eth10:h130-eth0 s8-eth11:h131-eth0 s8-eth12:h132-eth0 s8-eth13:h133-eth0 s8-eth14:h134-eth0 s8-eth15:h135-eth0 s8-eth16:h136-eth0 s8-eth17:h137-eth0 s8-eth18:h138-eth0 s8-eth19:h139-eth0 s8-eth20:h140-eth0 s8-eth21:h141-eth0 s8-eth22:h142-eth0 s8-eth23:h143-eth0 s8-eth24:h144-eth0 s8-eth25:h145-eth0 s8-eth26:h146-eth0 s8-eth27:h147-eth0
+s9 lo:  s9-eth1:s1005-eth4 s9-eth2:h148-eth0 s9-eth3:h149-eth0 s9-eth4:h150-eth0 s9-eth5:h151-eth0 s9-eth6:h152-eth0 s9-eth7:h153-eth0 s9-eth8:h154-eth0 s9-eth9:s1006-eth5 s9-eth10:h155-eth0 s9-eth11:h156-eth0 s9-eth12:h157-eth0 s9-eth13:s10-eth14 s9-eth14:h158-eth0
+s10 lo:  s10-eth1:s1000-eth3 s10-eth2:h159-eth0 s10-eth3:h160-eth0 s10-eth4:h161-eth0 s10-eth5:h162-eth0 s10-eth6:h163-eth0 s10-eth7:h164-eth0 s10-eth8:h165-eth0 s10-eth9:h166-eth0 s10-eth10:s1002-eth3 s10-eth11:h167-eth0 s10-eth12:h168-eth0 s10-eth13:h169-eth0 s10-eth14:s9-eth13
+s11 lo:  s11-eth1:s1004-eth2 s11-eth2:h170-eth0 s11-eth3:h171-eth0 s11-eth4:h172-eth0 s11-eth5:h173-eth0 s11-eth6:h174-eth0 s11-eth7:h175-eth0 s11-eth8:h176-eth0 s11-eth9:s1001-eth3 s11-eth10:h177-eth0 s11-eth11:h178-eth0 s11-eth12:h179-eth0 s11-eth13:s12-eth14 s11-eth14:h180-eth0
+s12 lo:  s12-eth1:s1007-eth3 s12-eth2:h181-eth0 s12-eth3:h182-eth0 s12-eth4:h183-eth0 s12-eth5:h184-eth0 s12-eth6:h185-eth0 s12-eth7:h186-eth0 s12-eth8:h187-eth0 s12-eth9:s1009-eth3 s12-eth10:h188-eth0 s12-eth11:h189-eth0 s12-eth12:h190-eth0 s12-eth13:h191-eth0 s12-eth14:s11-eth13
+s13 lo:  s13-eth1:s1005-eth2 s13-eth2:h192-eth0 s13-eth3:h193-eth0 s13-eth4:h194-eth0 s13-eth5:h195-eth0 s13-eth6:s1006-eth3 s13-eth7:s14-eth7 s13-eth8:h196-eth0 s13-eth9:h197-eth0
+s14 lo:  s14-eth1:s1003-eth3 s14-eth2:h198-eth0 s14-eth3:h199-eth0 s14-eth4:h200-eth0 s14-eth5:h201-eth0 s14-eth6:s1008-eth3 s14-eth7:s13-eth7 s14-eth8:h202-eth0 s14-eth9:h203-eth0
+s15 lo:  s15-eth1:h204-eth0 s15-eth2:h205-eth0 s15-eth3:h206-eth0 s15-eth4:h207-eth0 s15-eth6:s1-eth34 s15-eth7:s16-eth4 s15-eth8:h208-eth0 s15-eth9:h209-eth0 s15-eth10:h210-eth0 s15-eth11:h211-eth0 s15-eth12:h212-eth0 s15-eth13:h213-eth0 s15-eth14:h214-eth0 s15-eth15:h215-eth0 s15-eth16:h216-eth0 s15-eth17:h217-eth0 s15-eth18:h218-eth0 s15-eth19:h219-eth0 s15-eth20:h220-eth0 s15-eth21:h221-eth0 s15-eth22:h222-eth0 s15-eth23:h223-eth0 s15-eth24:h224-eth0 s15-eth25:h225-eth0 s15-eth26:h226-eth0 s15-eth27:h227-eth0 s15-eth28:h228-eth0 s15-eth29:h229-eth0 s15-eth30:h230-eth0 s15-eth31:h231-eth0 s15-eth32:h232-eth0 s15-eth33:h233-eth0 s15-eth34:h234-eth0 s15-eth35:s2-eth10 s15-eth36:h235-eth0 s15-eth37:h236-eth0 s15-eth38:h237-eth0 s15-eth39:h238-eth0 s15-eth40:h239-eth0 s15-eth41:h240-eth0 s15-eth42:h241-eth0 s15-eth43:h242-eth0 s15-eth44:h243-eth0 s15-eth45:h244-eth0 s15-eth46:h245-eth0 s15-eth47:h246-eth0 s15-eth48:h247-eth0 s15-eth49:h248-eth0 s15-eth50:h249-eth0 s15-eth51:h250-eth0 s15-eth52:h251-eth0 s15-eth53:h252-eth0 s15-eth54:h253-eth0
+s16 lo:  s16-eth1:h254-eth0 s16-eth2:h255-eth0 s16-eth4:s15-eth7 s16-eth5:s1004-eth3 s16-eth6:s1001-eth2 s16-eth7:h256-eth0
+s1000 lo:  s1000-eth1:s1-eth21 s1000-eth2:s7-eth4 s1000-eth3:s10-eth1
+s1001 lo:  s1001-eth1:s1-eth3 s1001-eth2:s16-eth6 s1001-eth3:s11-eth9 s1001-eth4:s4-eth1
+s1002 lo:  s1002-eth1:s2-eth5 s1002-eth2:s7-eth1 s1002-eth3:s10-eth10
+s1003 lo:  s1003-eth1:s1-eth20 s1003-eth2:s5-eth6 s1003-eth3:s14-eth1
+s1004 lo:  s1004-eth1:s2-eth9 s1004-eth2:s11-eth1 s1004-eth3:s16-eth5 s1004-eth4:s4-eth11
+s1005 lo:  s1005-eth1:s2-eth13 s1005-eth2:s13-eth1 s1005-eth3:s8-eth5 s1005-eth4:s9-eth1 s1005-eth5:s6-eth6
+s1006 lo:  s1006-eth1:s1-eth32 s1006-eth2:s8-eth1 s1006-eth3:s13-eth6 s1006-eth4:s6-eth1 s1006-eth5:s9-eth9
+s1007 lo:  s1007-eth1:s1-eth1 s1007-eth2:s3-eth10 s1007-eth3:s12-eth1
+s1008 lo:  s1008-eth1:s2-eth19 s1008-eth2:s5-eth1 s1008-eth3:s14-eth6
+s1009 lo:  s1009-eth1:s2-eth4 s1009-eth2:s3-eth1 s1009-eth3:s12-eth9
+h17 h17-eth0:s1-eth2
+h18 h18-eth0:s1-eth4
+h19 h19-eth0:s1-eth5
+h20 h20-eth0:s1-eth6
+h21 h21-eth0:s1-eth7
+h22 h22-eth0:s1-eth8
+h23 h23-eth0:s1-eth9
+h24 h24-eth0:s1-eth10
+h25 h25-eth0:s1-eth11
+h26 h26-eth0:s1-eth12
+h27 h27-eth0:s1-eth13
+h28 h28-eth0:s1-eth14
+h29 h29-eth0:s1-eth15
+h30 h30-eth0:s1-eth16
+h31 h31-eth0:s1-eth17
+h32 h32-eth0:s1-eth18
+h33 h33-eth0:s1-eth22
+h34 h34-eth0:s1-eth23
+h35 h35-eth0:s1-eth24
+h36 h36-eth0:s1-eth25
+h37 h37-eth0:s1-eth26
+h38 h38-eth0:s1-eth27
+h39 h39-eth0:s1-eth28
+h40 h40-eth0:s1-eth29
+h41 h41-eth0:s1-eth30
+h42 h42-eth0:s1-eth31
+h43 h43-eth0:s1-eth33
+h44 h44-eth0:s1-eth35
+h45 h45-eth0:s1-eth36
+h46 h46-eth0:s2-eth1
+h47 h47-eth0:s2-eth2
+h48 h48-eth0:s2-eth3
+h49 h49-eth0:s2-eth6
+h50 h50-eth0:s2-eth7
+h51 h51-eth0:s2-eth8
+h52 h52-eth0:s2-eth11
+h53 h53-eth0:s2-eth14
+h54 h54-eth0:s2-eth15
+h55 h55-eth0:s2-eth16
+h56 h56-eth0:s2-eth17
+h57 h57-eth0:s2-eth18
+h58 h58-eth0:s2-eth20
+h59 h59-eth0:s2-eth21
+h60 h60-eth0:s2-eth22
+h61 h61-eth0:s2-eth23
+h62 h62-eth0:s3-eth2
+h63 h63-eth0:s3-eth3
+h64 h64-eth0:s3-eth4
+h65 h65-eth0:s3-eth5
+h66 h66-eth0:s3-eth6
+h67 h67-eth0:s3-eth7
+h68 h68-eth0:s3-eth8
+h69 h69-eth0:s3-eth9
+h70 h70-eth0:s3-eth11
+h71 h71-eth0:s3-eth12
+h72 h72-eth0:s3-eth13
+h73 h73-eth0:s3-eth14
+h74 h74-eth0:s3-eth15
+h75 h75-eth0:s3-eth17
+h76 h76-eth0:s4-eth2
+h77 h77-eth0:s4-eth3
+h78 h78-eth0:s4-eth4
+h79 h79-eth0:s4-eth5
+h80 h80-eth0:s4-eth6
+h81 h81-eth0:s4-eth7
+h82 h82-eth0:s4-eth8
+h83 h83-eth0:s4-eth9
+h84 h84-eth0:s4-eth10
+h85 h85-eth0:s4-eth12
+h86 h86-eth0:s4-eth14
+h87 h87-eth0:s4-eth15
+h88 h88-eth0:s4-eth16
+h89 h89-eth0:s5-eth2
+h90 h90-eth0:s5-eth3
+h91 h91-eth0:s5-eth4
+h92 h92-eth0:s5-eth5
+h93 h93-eth0:s5-eth8
+h94 h94-eth0:s6-eth2
+h95 h95-eth0:s6-eth3
+h96 h96-eth0:s6-eth4
+h97 h97-eth0:s6-eth5
+h98 h98-eth0:s6-eth8
+h99 h99-eth0:s7-eth2
+h100 h100-eth0:s7-eth3
+h101 h101-eth0:s7-eth6
+h102 h102-eth0:s7-eth7
+h103 h103-eth0:s7-eth8
+h104 h104-eth0:s7-eth9
+h105 h105-eth0:s7-eth10
+h106 h106-eth0:s7-eth11
+h107 h107-eth0:s7-eth12
+h108 h108-eth0:s7-eth13
+h109 h109-eth0:s7-eth14
+h110 h110-eth0:s7-eth15
+h111 h111-eth0:s7-eth16
+h112 h112-eth0:s7-eth17
+h113 h113-eth0:s7-eth18
+h114 h114-eth0:s7-eth19
+h115 h115-eth0:s7-eth20
+h116 h116-eth0:s7-eth21
+h117 h117-eth0:s7-eth22
+h118 h118-eth0:s7-eth23
+h119 h119-eth0:s7-eth24
+h120 h120-eth0:s7-eth25
+h121 h121-eth0:s7-eth26
+h122 h122-eth0:s7-eth27
+h123 h123-eth0:s7-eth28
+h124 h124-eth0:s8-eth2
+h125 h125-eth0:s8-eth3
+h126 h126-eth0:s8-eth4
+h127 h127-eth0:s8-eth7
+h128 h128-eth0:s8-eth8
+h129 h129-eth0:s8-eth9
+h130 h130-eth0:s8-eth10
+h131 h131-eth0:s8-eth11
+h132 h132-eth0:s8-eth12
+h133 h133-eth0:s8-eth13
+h134 h134-eth0:s8-eth14
+h135 h135-eth0:s8-eth15
+h136 h136-eth0:s8-eth16
+h137 h137-eth0:s8-eth17
+h138 h138-eth0:s8-eth18
+h139 h139-eth0:s8-eth19
+h140 h140-eth0:s8-eth20
+h141 h141-eth0:s8-eth21
+h142 h142-eth0:s8-eth22
+h143 h143-eth0:s8-eth23
+h144 h144-eth0:s8-eth24
+h145 h145-eth0:s8-eth25
+h146 h146-eth0:s8-eth26
+h147 h147-eth0:s8-eth27
+h148 h148-eth0:s9-eth2
+h149 h149-eth0:s9-eth3
+h150 h150-eth0:s9-eth4
+h151 h151-eth0:s9-eth5
+h152 h152-eth0:s9-eth6
+h153 h153-eth0:s9-eth7
+h154 h154-eth0:s9-eth8
+h155 h155-eth0:s9-eth10
+h156 h156-eth0:s9-eth11
+h157 h157-eth0:s9-eth12
+h158 h158-eth0:s9-eth14
+h159 h159-eth0:s10-eth2
+h160 h160-eth0:s10-eth3
+h161 h161-eth0:s10-eth4
+h162 h162-eth0:s10-eth5
+h163 h163-eth0:s10-eth6
+h164 h164-eth0:s10-eth7
+h165 h165-eth0:s10-eth8
+h166 h166-eth0:s10-eth9
+h167 h167-eth0:s10-eth11
+h168 h168-eth0:s10-eth12
+h169 h169-eth0:s10-eth13
+h170 h170-eth0:s11-eth2
+h171 h171-eth0:s11-eth3
+h172 h172-eth0:s11-eth4
+h173 h173-eth0:s11-eth5
+h174 h174-eth0:s11-eth6
+h175 h175-eth0:s11-eth7
+h176 h176-eth0:s11-eth8
+h177 h177-eth0:s11-eth10
+h178 h178-eth0:s11-eth11
+h179 h179-eth0:s11-eth12
+h180 h180-eth0:s11-eth14
+h181 h181-eth0:s12-eth2
+h182 h182-eth0:s12-eth3
+h183 h183-eth0:s12-eth4
+h184 h184-eth0:s12-eth5
+h185 h185-eth0:s12-eth6
+h186 h186-eth0:s12-eth7
+h187 h187-eth0:s12-eth8
+h188 h188-eth0:s12-eth10
+h189 h189-eth0:s12-eth11
+h190 h190-eth0:s12-eth12
+h191 h191-eth0:s12-eth13
+h192 h192-eth0:s13-eth2
+h193 h193-eth0:s13-eth3
+h194 h194-eth0:s13-eth4
+h195 h195-eth0:s13-eth5
+h196 h196-eth0:s13-eth8
+h197 h197-eth0:s13-eth9
+h198 h198-eth0:s14-eth2
+h199 h199-eth0:s14-eth3
+h200 h200-eth0:s14-eth4
+h201 h201-eth0:s14-eth5
+h202 h202-eth0:s14-eth8
+h203 h203-eth0:s14-eth9
+h204 h204-eth0:s15-eth1
+h205 h205-eth0:s15-eth2
+h206 h206-eth0:s15-eth3
+h207 h207-eth0:s15-eth4
+h208 h208-eth0:s15-eth8
+h209 h209-eth0:s15-eth9
+h210 h210-eth0:s15-eth10
+h211 h211-eth0:s15-eth11
+h212 h212-eth0:s15-eth12
+h213 h213-eth0:s15-eth13
+h214 h214-eth0:s15-eth14
+h215 h215-eth0:s15-eth15
+h216 h216-eth0:s15-eth16
+h217 h217-eth0:s15-eth17
+h218 h218-eth0:s15-eth18
+h219 h219-eth0:s15-eth19
+h220 h220-eth0:s15-eth20
+h221 h221-eth0:s15-eth21
+h222 h222-eth0:s15-eth22
+h223 h223-eth0:s15-eth23
+h224 h224-eth0:s15-eth24
+h225 h225-eth0:s15-eth25
+h226 h226-eth0:s15-eth26
+h227 h227-eth0:s15-eth27
+h228 h228-eth0:s15-eth28
+h229 h229-eth0:s15-eth29
+h230 h230-eth0:s15-eth30
+h231 h231-eth0:s15-eth31
+h232 h232-eth0:s15-eth32
+h233 h233-eth0:s15-eth33
+h234 h234-eth0:s15-eth34
+h235 h235-eth0:s15-eth36
+h236 h236-eth0:s15-eth37
+h237 h237-eth0:s15-eth38
+h238 h238-eth0:s15-eth39
+h239 h239-eth0:s15-eth40
+h240 h240-eth0:s15-eth41
+h241 h241-eth0:s15-eth42
+h242 h242-eth0:s15-eth43
+h243 h243-eth0:s15-eth44
+h244 h244-eth0:s15-eth45
+h245 h245-eth0:s15-eth46
+h246 h246-eth0:s15-eth47
+h247 h247-eth0:s15-eth48
+h248 h248-eth0:s15-eth49
+h249 h249-eth0:s15-eth50
+h250 h250-eth0:s15-eth51
+h251 h251-eth0:s15-eth52
+h252 h252-eth0:s15-eth53
+h253 h253-eth0:s15-eth54
+h254 h254-eth0:s16-eth1
+h255 h255-eth0:s16-eth2
+h256 h256-eth0:s16-eth7
