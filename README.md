@@ -1,33 +1,21 @@
 ## Authors
+* Yang (Jack) Wu (yangwu6@cis.upenn.edu)
 * James Hongyi Zeng (hyzeng_at_stanford.edu)
 * Peyman Kazemian (kazemian_at_stanford.edu)
 
-## What is ATPG?
-ATPG stands for "Automatic Test Packet Generation". It is a framework to formally test the correctness of a network by generating a test suite against the network configuration
-
-ATPG reads router configurations and generates a device-independent model. The model is used to generate a minimum set of test packets to (minimally) exercise every link in the network or (maximally) exercise every rule in the network. Test packets are sent periodically and detected failures trigger a separate mechanism
-to localize the fault. ATPG can detect both functional (e.g., incorrect firewall rule) and performance problems (e.g., congested queue). ATPG complements but goes beyond earlier work in static checking (which cannot detect liveness or performance faults) or fault localization (which only localize faults given liveness results).
-
-## What can I find from this repository?
-This git repository hosts all the necessary code to run ATPG against Cisco or Juniper router configuration files. To demonstrate the usage of ATPG, we include two example networks - a Stanford backbone network captured on June 2011, and a Internet2 backbone captured on March 2012. You are welcome to try out your own network configurations.
-
-## Reproduce our results
-Our results are reported in our CoNEXT 2012 paper (to appear). We try hard to enable others to reproduce our results. The evaluation part of our paper is divided into two portions
-
-* Offline evaluation
-An offline evaluation part calculates the number of test packets needed in various scenarios. The main results are reported in Table 5 and Figure 8 of our paper. Please follow the [[Offline evaluation]] page to reproduce our results.
-
-* Online evaluation (Mini-Stanford)
-For online evaluation part (Figure 9 and 10), we use Mininet to emulate the behavior of Stanford network. We develop a set of tools called [[Mini-Stanford]]. Visit the wiki page for detailed instructions.
-
-## How can I use ATPG in my own network?
-ATPG is still in early development phase.
-
-At this stage, the easiest way to try it out in your own network is to first understand how it works and what the results mean, with the two built-in examples - Stanford backbone (Cisco-based) and Internet2  backbone (Juniper based). Then you may replace the Stanford or Internet2 data with your own network configurations. During this process, the following files may need to be replicated and modified accordingly
-
-```
-utils/generate_stanford_backbone_tf.py
-utils/load_stanford_backbone.py
-atpg_stanford.py
-```
+## Getting Started
+* The idea is to route ICMP traffic in the emulated Stanford-backbone network.
+* Follow the [configuration instructions]() to generated the necessary OpenFlow rules (translated from the Stanford-backbone network). 
+* Follow the [controller instructions]() to setup the controller which would install the previously-generated OpenFlow rules into Mininet.
+* Follow the [topology instructions]() to setup the Stanford-backbone topology in Mininet.
+* From [mininet net output]() we noticed the connection: `h197(h197-eth0) --- (s13-eth9)s13(s13-eth8) --- (h196-eth0)h196`. So h197 is where we want to initiate the ICMP traffic.
+* Check what routes are available at s13 by `sudo ovs-ofctl dump-flows s13`. Observe this: `cookie=0x0, duration=3189.633s, table=0, n_packets=0, n_bytes=0, priority=59929,ip,nw_dst=128.12.1.248/29 actions=output:5,output:8,output:2`. So we can try to ping `128.12.1.249`. And if things work, the ICMP traffic should be forwarded to both `s13-eth2 and s13-eth8` but not other ports.
+* Prepare h197 to initiate ICMP traffic. 
+  * Add an default route by `h197 route add default dev h197-eth0`. Without this, h197 does not know how to route traffic other than 10.0.0.1/24 destinations. View the route table by `h197 router -n`.
+  * Setup static ARP by `h197 arp -s 128.12.196.123 01:00:00:00:00:23`. Without this, the PING client could not figure out what MAC address to use, i.e. some ARP protocol is required.
+* Start ICMP traffic: `h197 ping 128.12.1.249`.
+* Check if the ICMP traffic is forwarded properly.
+  * Check if s13 receive the traffic: `sudo tcpdump icmp -i s13-eth9 -nS`. You should see ICMP traffic.
+  * Check if s13 forward the traffic correctly: `sudo tcpdump icmp -i s13-eth2 -nS` & `sudo tcpdump icmp -i s13-eth8 -nS`. You should see ICMP traffic. `sudo tcpdump icmp -i s13-eth3 -nS`. You should see ICMP traffic (and for all other ports except 2 & 8).
+  * Ping should fail. Because we did not configure host IP.
 
