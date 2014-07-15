@@ -46,6 +46,8 @@ class StanfordTopo( Topo ):
     TOPO_FILENAME = "data/backbone_topology.tf"
     
     dummy_switches = set()
+    # Jack
+    dummy_rules = list()
 
     def __init__( self ):
         # Read topology info
@@ -111,6 +113,15 @@ class StanfordTopo( Topo ):
                 links.add((src_port_flat, dst_port_flat))
         f.close()
         return links
+
+    # Jack
+    def generate_dummy_rules(self, dummy_switch_id, port_count):
+            ingress = "sudo ovs-ofctl add-flow s%s in_port=1,actions=" % (dummy_switch_id)
+            for dst_port in range(2, port_count + 2):
+                ingress += "output:%d," % dst_port
+                self.dummy_rules.append("sudo ovs-ofctl add-flow s%s in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
+            ingress = ingress[:-1]
+            self.dummy_rules.append(ingress)
         
     def create_links(self, links, ports):  
         '''Generate dummy switches
@@ -142,6 +153,10 @@ class StanfordTopo( Topo ):
             # Special ports!
             if(len(first_pass[(dpid,port)])>1):
                 # Jack
+                # Generate dummy rules
+                self.generate_dummy_rules(dummy_switch_id, len(first_pass[(dpid,port)]))
+
+                # Jack
                 print "add_switch(): s%s (dummy)" % dummy_switch_id
                 #self.add_switch( "s%s" % dummy_switch_id )
                 self.dummy_switches.add(dummy_switch_id)
@@ -168,7 +183,9 @@ class StanfordTopo( Topo ):
                 print "add_link(): nodes s%s to s%s, ports %d to %d (normal)" % (dpid, dst_dpid, port, dst_port)
                 #self.add_link( node1="s%s" % dpid, node2="s%s" % dst_dpid, port1=port, port2=dst_port )
                 ports[dst_dpid].discard(dst_port)     
-            ports[dpid].discard(port)          
+            ports[dpid].discard(port) 
+
+    
         
 class StanfordMininet ( Mininet ):
 
@@ -198,13 +215,17 @@ def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy
         switch.pause()
         switch.start( [dummy_controller] )
         
-    # Turn on STP  
+    # Turn on STP
     for switchName in topo.switches():
         switch = net.nameToNode[switchName]
         cmd = "ovs-vsctl set Bridge %s stp_enable=true" % switch.name
         switch.cmd(cmd)
         
     switch.cmd('ovs-vsctl set Bridge s1 other_config:stp-priority=0x10')
+
+    # Install dummy rules
+    for rule in topo.dummy_rules:
+        switch.cmd(rule)
         
     CLI( net )
     net.stop()

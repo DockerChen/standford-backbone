@@ -47,6 +47,8 @@ class StanfordTopo( Topo ):
     TOPO_FILENAME = "data/backbone_topology.tf"
     
     dummy_switches = set()
+    # Jack
+    dummy_rules = list()
 
     def __init__( self ):
         # Read topology info
@@ -141,6 +143,10 @@ class StanfordTopo( Topo ):
             # Special ports!
             if(len(first_pass[(dpid,port)])>1):
                 # Jack
+                # Generate dummy rules
+                self.generate_dummy_rules(dummy_switch_id, len(first_pass[(dpid,port)]))
+
+                # Jack
                 print "add_switch(): s%s (dummy)" % dummy_switch_id
                 self.addSwitch( "s%s" % dummy_switch_id )
                 self.dummy_switches.add(dummy_switch_id)
@@ -169,6 +175,15 @@ class StanfordTopo( Topo ):
                 ports[dst_dpid].discard(dst_port)     
             ports[dpid].discard(port)          
         
+     # Jack
+    def generate_dummy_rules(self, dummy_switch_id, port_count):
+        ingress = "sudo ovs-ofctl add-flow s%s in_port=1,actions=" % (dummy_switch_id)
+        for dst_port in range(2, port_count + 2):
+            ingress += "output:%d," % dst_port
+            self.dummy_rules.append("sudo ovs-ofctl add-flow s%s in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
+        ingress = ingress[:-1]
+        self.dummy_rules.append(ingress)
+
 class StanfordMininet ( Mininet ):
 
     def build( self ):
@@ -178,7 +193,9 @@ class StanfordMininet ( Mininet ):
         # Need _manual_ modification for different topology files!!!
         self.topo.addLink( node1="s%s" % 15, node2="s%s" % 16, port1=7, port2=4 )
 
-def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
+# Jack
+#def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
+def StanfordTopoTest( controller_ip, controller_port ):
     topo = StanfordTopo()
 
     main_controller = lambda a: RemoteController( a, ip=controller_ip, port=controller_port)
@@ -186,6 +203,8 @@ def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy
     
     net.start()
     
+    '''
+    # Jack: use ovs-ofctl to install dummy rules
     # These switches should be set to a local controller..
     dummy_switches = topo.dummy_switches
     dummyClass = lambda a: RemoteController( a, ip=dummy_controller_ip, port=dummy_controller_port)
@@ -197,6 +216,7 @@ def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy
         # Jack
         # switch.pause()
         switch.start( [dummy_controller] )
+    '''
         
     # Turn on STP  
     for switchName in topo.switches():
@@ -205,7 +225,13 @@ def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy
         switch.cmd(cmd)
         
     switch.cmd('ovs-vsctl set Bridge s1 other_config:stp-priority=0x10')
-        
+
+    # Jack
+    # Install dummy rules
+    for rule in topo.dummy_rules:
+        print "Installing dummy rule: %s" % rule
+        result = switch.cmd(rule)
+
     CLI( net )
     net.stop()
 
@@ -223,18 +249,23 @@ if __name__ == '__main__':
     parser.add_argument("-p", dest="controller_port",type=int,
                       default=6633,
                       help="Controller's port")
+    '''
+    # Jack
     parser.add_argument("-c2", dest="dummy_controller_name",
                       default="localhost",
                       help="Dummy controller's hostname or IP")
     parser.add_argument("-p2", dest="dummy_controller_port",type=int,
                       default=6633,
                       help="Dummy ontroller's port")
+    '''
     args = parser.parse_args()
     print description
     print "Starting with primary controller %s:%d" % (args.controller_name, args.controller_port)
-    print "Starting with dummy controller %s:%d" % (args.dummy_controller_name, args.dummy_controller_port)
     # Jack
+    #print "Starting with dummy controller %s:%d" % (args.dummy_controller_name, args.dummy_controller_port)
     topo = StanfordTopo()
     Mininet.init()
-    StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, gethostbyname(args.dummy_controller_name), args.dummy_controller_port)
+    StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port)
+    # Jack
+    # StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, gethostbyname(args.dummy_controller_name), args.dummy_controller_port)
 
