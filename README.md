@@ -5,10 +5,10 @@
 
 ## Getting Started
 * The idea is to route ICMP traffic in the emulated Stanford-backbone network.
-* Follow the [configuration instructions]() to generated the necessary OpenFlow rules (translated from the Stanford-backbone network). 
-* Follow the [controller instructions]() to setup the controller which would install the previously-generated OpenFlow rules into Mininet.
-* Follow the [topology instructions]() to setup the Stanford-backbone topology in Mininet.
-* From [mininet net output]() we noticed the connection: `h197(h197-eth0) --- (s13-eth9)s13(s13-eth8) --- (h196-eth0)h196`. So h197 is where we want to initiate the ICMP traffic.
+* Follow the [configuration instructions](https://github.com/wuyangjack/standford-backbone/blob/master/configuration/Notes.md) to generated the necessary OpenFlow rules (translated from the Stanford-backbone network). 
+* Follow the [controller instructions](https://github.com/wuyangjack/standford-backbone/blob/master/controller/Notes.md) to setup the controller which would install the previously-generated OpenFlow rules into Mininet.
+* Follow the [topology instructions](https://github.com/wuyangjack/standford-backbone/blob/master/topology/Notes.md) to setup the Stanford-backbone topology in Mininet.
+* From [mininet net output](https://github.com/wuyangjack/standford-backbone/blob/master/topology/net.txt)(`mininet> net`) we noticed the connection: `h197(h197-eth0) --- (s13-eth9)s13(s13-eth8) --- (h196-eth0)h196`. So h197 is where we want to initiate the ICMP traffic.
 * Check what routes are available at s13 by `sudo ovs-ofctl dump-flows s13`. Observe this: `cookie=0x0, duration=3189.633s, table=0, n_packets=0, n_bytes=0, priority=59929,ip,nw_dst=128.12.1.248/29 actions=output:5,output:8,output:2`. So we can try to ping `128.12.1.249`. And if things work, the ICMP traffic should be forwarded to both `s13-eth2 and s13-eth8` but not other ports.
 * Prepare h197 to initiate ICMP traffic. 
   * Add an default route by `h197 route add default dev h197-eth0`. Without this, h197 does not know how to route traffic other than 10.0.0.1/24 destinations. View the route table by `h197 router -n`.
