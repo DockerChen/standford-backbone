@@ -1,3 +1,4 @@
 configuration/work/*
 *.pyc
+*.pcap
 *~
