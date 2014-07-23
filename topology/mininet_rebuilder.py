@@ -232,6 +232,14 @@ def StanfordTopoTest( controller_ip, controller_port ):
         print "Installing dummy rule: %s" % rule
         result = switch.cmd(rule)
 
+    # Jack
+    # Set default route at hosts
+    for hostName in topo.hosts():
+        host = net.nameToNode[hostName]
+        cmd = "route add default dev %s-eth0" % host.name
+        print "Setting up default route: %s" % cmd
+        host.cmd(cmd)
+
     CLI( net )
     net.stop()
 
