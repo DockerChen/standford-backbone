@@ -2,3 +2,4 @@ configuration/work/*
 *.pyc
 *.pcap
 *~
+logs/*

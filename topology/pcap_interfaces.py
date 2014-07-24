@@ -12,4 +12,7 @@ with open(inputFile) as f:
             for token in tokens:
                 if token.find(":") != -1 and token != "lo:":
                     ports = token.strip().split(":")
-                    print ports[0]
+                    # Tweak to avoid memory crash
+                    # Should end up with 48 switches
+                    if ports[0].endswith("eth1") or ports[0].endswith("eth2") or ports[0].endswith("eth3"):
+                    	print ports[0]

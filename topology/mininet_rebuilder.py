@@ -31,6 +31,7 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.link import Link, Intf
 from mininet.node import Host, OVSKernelSwitch, Controller, RemoteController
+from mininet.node import OVSController
 
 class StanfordTopo( Topo ):
     "Topology for Stanford backbone"
@@ -177,10 +178,10 @@ class StanfordTopo( Topo ):
         
      # Jack
     def generate_dummy_rules(self, dummy_switch_id, port_count):
-        ingress = "sudo ovs-ofctl add-flow s%s in_port=1,actions=" % (dummy_switch_id)
+        ingress = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=1,actions=" % (dummy_switch_id)
         for dst_port in range(2, port_count + 2):
             ingress += "output:%d," % dst_port
-            self.dummy_rules.append("sudo ovs-ofctl add-flow s%s in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
+            self.dummy_rules.append("sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
         ingress = ingress[:-1]
         self.dummy_rules.append(ingress)
 
@@ -194,7 +195,8 @@ class StanfordMininet ( Mininet ):
         self.topo.addLink( node1="s%s" % 15, node2="s%s" % 16, port1=7, port2=4 )
 
 # Jack
-#def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
+# Discard dummy controller parameters
+# def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
 def StanfordTopoTest( controller_ip, controller_port ):
     topo = StanfordTopo()
 
@@ -202,9 +204,11 @@ def StanfordTopoTest( controller_ip, controller_port ):
     net = StanfordMininet( topo=topo, switch=OVSKernelSwitch, controller=main_controller)
     
     net.start()
-    
+
+    # Jack
+    # Dummy controller not used
+    # Instead use ovs-ofctl to install pre-computed dummy rules
     '''
-    # Jack: use ovs-ofctl to install dummy rules
     # These switches should be set to a local controller..
     dummy_switches = topo.dummy_switches
     dummyClass = lambda a: RemoteController( a, ip=dummy_controller_ip, port=dummy_controller_port)
@@ -217,7 +221,11 @@ def StanfordTopoTest( controller_ip, controller_port ):
         # switch.pause()
         switch.start( [dummy_controller] )
     '''
-        
+
+    # Jack
+    # STP truned off
+    # Otherwise, dummy ports might be down, causing connectivity problem
+    '''    
     # Turn on STP  
     for switchName in topo.switches():
         switch = net.nameToNode[switchName]
@@ -225,15 +233,18 @@ def StanfordTopoTest( controller_ip, controller_port ):
         switch.cmd(cmd)
         
     switch.cmd('ovs-vsctl set Bridge s1 other_config:stp-priority=0x10')
+    '''
 
     # Jack
     # Install dummy rules
+    switch = net.nameToNode["s1001"]
     for rule in topo.dummy_rules:
         print "Installing dummy rule: %s" % rule
         result = switch.cmd(rule)
-
+    
     # Jack
-    # Set default route at hosts
+    # Set default route at hosts, forwarding all traffic to access switch
+    # Otherwise PING complains no route
     for hostName in topo.hosts():
         host = net.nameToNode[hostName]
         cmd = "route add default dev %s-eth0" % host.name
@@ -255,10 +266,11 @@ if __name__ == '__main__':
                       default="localhost",
                       help="Controller's hostname or IP")
     parser.add_argument("-p", dest="controller_port",type=int,
-                      default=6633,
+                      default=7733,
                       help="Controller's port")
+
+    # Jack: discard dummy controller parameters
     '''
-    # Jack
     parser.add_argument("-c2", dest="dummy_controller_name",
                       default="localhost",
                       help="Dummy controller's hostname or IP")
@@ -266,6 +278,7 @@ if __name__ == '__main__':
                       default=6633,
                       help="Dummy ontroller's port")
     '''
+    
     args = parser.parse_args()
     print description
     print "Starting with primary controller %s:%d" % (args.controller_name, args.controller_port)
