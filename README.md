@@ -30,7 +30,7 @@
 
 ## Ping Stanford
 * Prepares h197 to initiate ICMP traffic to `stanford.cs.edu` (171.64.64.64).
-* Probe the path: `h197-eth0 > s13-eth9 > s13-eth6 > s1006-eth3 > s1006-eth1 > s1-eth32 > s1-eth22 > h33-eth0`
+* Probe the path: `h197-eth0 > s13-eth9 > s13-eth6 > s1006-eth3 > s1006-eth1 > s1-eth32 > s1-eth22 > h33-eth0`.
 * Inject fault: 
   ** Add a dropping rule by `sudo ovs-ofctl add-flow s1 dl_type=0x0800,nw_dst=171.64.64.64/32,priority=65535,actions=`
   ** The previous traffic will be dropped. Run `sudo tcpdump -i s1-eth32 -nS` you should still see traffic. However, run `sudo tcpdump -i s1-eth22 -nS`, and you should not see traffic. Bascically, traffic is dropped at s1.
