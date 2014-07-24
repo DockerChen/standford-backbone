@@ -22,7 +22,7 @@
 ## Google
 * Prepare h197 to initiate ICMP traffic to Google (74.125.226.78).
 * Probe the path
-  * Use the [topology information]() to figure out peering ports.
+  * Use the [topology information](https://github.com/wuyangjack/standford-backbone/blob/master/topology/net.txt) to figure out peering ports.
   * See what flow table entries are being matched by invert matching: `sudo ovs-ofctl dump-flows s13 | grep -v n_packets=0`
 * The path of Google traffic: 
   * `h197-eth0 > s13-eth9 > s13-eth1 > s1005-eth4 > s1005-eth1 > s2-eth13 > s2-eth4 > s1009-eth1 > s1009-eth2(s1009-eth3) > s3-eth1(s12-eth9) > s3-eth7(s12-eth1) > h67-eth0(s1007-eth3) > (s1007-eth1) > (s1-eth1) > (s1-eth4) > (h18-eth0)`
