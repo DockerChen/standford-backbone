@@ -239,17 +239,31 @@ def StanfordTopoTest( controller_ip, controller_port ):
     # Install dummy rules
     switch = net.nameToNode["s1001"]
     for rule in topo.dummy_rules:
-        print "Installing dummy rule: %s" % rule
         result = switch.cmd(rule)
+        print "Installing dummy rule: %s, returns: " % rule, result
     
     # Jack
-    # Set default route at hosts, forwarding all traffic to access switch
-    # Otherwise PING complains no route
+    # Prepare hosts
     for hostName in topo.hosts():
         host = net.nameToNode[hostName]
+        # Set default route at hosts, forwarding all traffic to access switch
+        # Otherwise PING complains no route
         cmd = "route add default dev %s-eth0" % host.name
-        print "Setting up default route: %s" % cmd
-        host.cmd(cmd)
+        result = host.cmd(cmd)
+        if len(result) != 0:
+            raise Exception("error")
+        print "Setting up default route: %s, returns: #%s#" % (cmd, result)
+        # Set static ARP protocol
+        # Otherwise needs to setup ARP
+        cmd = "arp -s 171.64.64.64 01:00:00:00:00:23"
+        result = host.cmd(cmd)
+        if len(result) != 0:
+            raise Exception("error")
+        print "Setting up static ARP: %s, returns: %s" % (cmd, result)
+        # Initiate ping traffic
+        cmd = "ping 171.64.64.64 &"
+        result = host.cmd(cmd)
+        print "Traffic: %s, returns: %s" % (cmd, result)
 
     CLI( net )
     net.stop()
@@ -278,7 +292,7 @@ if __name__ == '__main__':
                       default=6633,
                       help="Dummy ontroller's port")
     '''
-    
+
     args = parser.parse_args()
     print description
     print "Starting with primary controller %s:%d" % (args.controller_name, args.controller_port)
