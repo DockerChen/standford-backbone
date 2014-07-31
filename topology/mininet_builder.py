@@ -259,3 +259,102 @@ if __name__ == '__main__':
     #Mininet.init()
     #StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, gethostbyname(args.dummy_controller_name), args.dummy_controller_port)
 
+
+
+    '''
+    # Jack
+# Discard dummy controller parameters
+# def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
+def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
+    topo = StanfordTopo(edge)
+
+    main_controller = lambda a: RemoteController( a, ip=controller_ip, port=controller_port)
+    net = StanfordMininet(topo=topo, switch=OVSKernelSwitch, controller=main_controller)
+    
+    net.start()
+
+    # Jack
+    # Dummy controller not used
+    # Instead use ovs-ofctl to install pre-computed dummy rules
+    # These switches should be set to a local controller..
+    dummy_controller_ip = "127.0.0.1"
+    dummy_controller_port = 8833
+    dummy_switches = topo.dummy_switches
+    dummyClass = lambda a: RemoteController( a, ip=dummy_controller_ip, port=dummy_controller_port)
+    dummy_controller = net.addController( name='dummy_controller', controller=dummyClass)
+    dummy_controller.start()
+
+    for dpid in dummy_switches:
+        switch = net.nameToNode["s%s" % dpid]
+        # Jack
+        # switch.pause()
+        switch.start( [dummy_controller] )
+
+    for dpid in edge_switches:
+        switch = net.nameToNode["s%s" % dpid]
+        # Jack
+        # switch.pause()
+        switch.start( [dummy_controller] )
+    
+    # Jack
+    # STP truned off
+    # Otherwise, dummy ports might be down, causing connectivity problem
+    # Turn on STP  
+    for switchName in topo.switches():
+        switch = net.nameToNode[switchName]
+        cmd = "ovs-vsctl set Bridge %s stp_enable=true" % switch.name
+        switch.cmd(cmd)
+        
+    switch.cmd('ovs-vsctl set Bridge s1 other_config:stp-priority=0x10')
+
+    # Jack
+    # Install dummy rules
+    switch = net.nameToNode["s1001"]
+    for rule in topo.dummy_rules:
+        result = switch.cmd(rule)
+        print "Installing dummy rule: %s, returns: " % rule, result
+
+    # Install edge rules
+    for rule in topo.edge_rules:
+        result = switch.cmd(rule)
+        print "Installing edge rule: %s, returns: " % rule, result
+    
+    # Jack
+    # Customize traffic
+    if traffic:
+        traffics = {}
+        traffics["171.64.64.64"] = "01:00:00:00:00:01"      # cs.stanford.edu
+        traffics["74.125.226.78"] = "01:00:00:00:00:02"     # google.com
+
+    # Jack
+    # Prepare hosts
+    for hostName in topo.hosts():
+        host = net.nameToNode[hostName]
+        # Set default route at hosts, forwarding all traffic to access switch
+        # Otherwise PING complains no route
+        cmd = "route add default dev %s-eth0" % host.name
+        result = host.cmd(cmd)
+        if len(result) != 0:
+            raise Exception("error")
+        print "Setting up default route: %s, returns: #%s#" % (cmd, result)
+
+        # Setup traffic
+        if traffic:
+            for ip in traffics.keys():
+                 # Set static ARP protocol
+                # Otherwise needs to setup ARP
+                mac = traffics[ip]
+                cmd = "arp -s %s %s" % (ip, mac)
+                result = host.cmd(cmd)
+                if len(result) != 0:
+                    raise Exception("error")
+                print "Setting up static ARP: %s, returns: %s" % (cmd, result)
+                # Initiate ping traffic
+                cmd = "ping %s &" % ip
+                result = host.cmd(cmd)
+                print "Traffic: %s, returns: %s" % (cmd, result)
+
+    CLI( net )
+    net.stop()
+    '''
+

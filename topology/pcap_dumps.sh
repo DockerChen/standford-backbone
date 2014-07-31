@@ -12,5 +12,5 @@ mkdir $pcaps
 for host in $hosts
 do
 	echo "Dump packets at: "$host
-	sudo tcpdump icmp -i $host -nS -Uw $pcaps/$host.pcap &
+	sudo taskset -c 3 tcpdump icmp -i $host -nS -Uw $pcaps/$host.pcap &
 done

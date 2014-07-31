@@ -49,9 +49,12 @@ class StanfordTopo( Topo ):
     PORT_MAP_FILENAME = "data/port_map.txt"
     TOPO_FILENAME = "data/backbone_topology.tf"
     
+    core_switches = set()
     dummy_switches = set()
+    edge_switches = set()
     # Jack
     dummy_rules = list()
+    edge_rules = list()
     edge_switch_count = 0
     edge_host_count = 0
 
@@ -69,6 +72,7 @@ class StanfordTopo( Topo ):
             # Jack
             print "add_switch(): s%s" % s
             self.addSwitch( "s%s" % s )
+            self.core_switches.add(s)
 
         # Wire up switches       
         self.create_links(links, ports)
@@ -83,6 +87,7 @@ class StanfordTopo( Topo ):
                     # Add edge network
                     backbone_switch_id, backbone_port = self.create_edge_network()
                     # Connect edge network to backbone
+                    # Add single switch for each edge port
                     print "add_link(): nodes s%s to s%s, ports %d to %d (backbone)" % (backbone_switch_id, s, backbone_port, port)
                     self.addLink( "s%s" % backbone_switch_id, "s%s" % s, backbone_port, port )
                 else:
@@ -102,6 +107,7 @@ class StanfordTopo( Topo ):
         s = "%d" % (self.edge_switch_count + self.EDGE_SWITCH_BASE)
         print "add_switch(): s%s" % s
         self.addSwitch( "s%s" % s )
+        self.edge_switches.add(s)
         # Add host
         self.edge_host_count += 1
         h = "%s" % self.edge_host_count
@@ -111,6 +117,12 @@ class StanfordTopo( Topo ):
         # Connect host to backbone
         print "add_link(): nodes h%s to s%s, ports %d to %d (backbone)" % (h, s, 0, 1)
         self.addLink( "h%s" % h, "s%s" % s, 0, 1)
+        # Append edge rules
+        outflow = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=1,actions=output:2" % (s)
+        inflow = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=2,actions=output:1" % (s)
+        self.edge_rules.append(outflow)
+        self.edge_rules.append(inflow)
+        # Return
         return s, 2
 
     def load_ports(self, filename):
@@ -223,60 +235,72 @@ class StanfordMininet ( Mininet ):
         # Need _manual_ modification for different topology files!!!
         self.topo.addLink( node1="s%s" % 15, node2="s%s" % 16, port1=7, port2=4 )
 
+
 # Jack
 # Discard dummy controller parameters
 # def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
 def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
+    
     topo = StanfordTopo(edge)
 
-    main_controller = lambda a: RemoteController( a, ip=controller_ip, port=controller_port)
-    net = StanfordMininet(topo=topo, switch=OVSKernelSwitch, controller=main_controller)
+    dummy_controller = RemoteController("dummy_controller", ip="127.0.0.1", port=8833)
+    main_controller = RemoteController("main_controller", ip=controller_ip, port=controller_port)
+
+    cmap = {}
+    for dpid in topo.core_switches:
+        s = "s%s" % dpid
+        cmap[s] = main_controller
+
+    for dpid in topo.dummy_switches:
+        s = "s%s" % dpid
+        cmap[s] = dummy_controller
     
+    for dpid in topo.edge_switches:
+        s = "s%s" % dpid
+        cmap[s] = dummy_controller
+
+    class MultiSwitch( OVSKernelSwitch ):
+        def start( self, controllers ):
+            return OVSKernelSwitch.start( self, [ cmap[ self.name ] ] )
+
+    net = Mininet( topo=topo, switch=MultiSwitch, build=False )
+    net.addController(dummy_controller)
+    net.addController(main_controller)
+    net.build()
     net.start()
-
-    # Jack
-    # Dummy controller not used
-    # Instead use ovs-ofctl to install pre-computed dummy rules
-    # These switches should be set to a local controller..
-    dummy_controller_ip = "127.0.0.1"
-    dummy_controller_port = 8833
-    dummy_switches = topo.dummy_switches
-    dummyClass = lambda a: RemoteController( a, ip=dummy_controller_ip, port=dummy_controller_port)
-    dummy_controller = net.addController( name='dummy_controller', controller=dummyClass)
-    dummy_controller.start()
-
-    for dpid in dummy_switches:
-        switch = net.nameToNode["s%s" % dpid]
-        # Jack
-        # switch.pause()
-        switch.start( [dummy_controller] )
     
-    # Jack
-    # STP truned off
-    # Otherwise, dummy ports might be down, causing connectivity problem
-    '''    
-    # Turn on STP  
-    for switchName in topo.switches():
-        switch = net.nameToNode[switchName]
-        cmd = "ovs-vsctl set Bridge %s stp_enable=true" % switch.name
-        switch.cmd(cmd)
-        
-    switch.cmd('ovs-vsctl set Bridge s1 other_config:stp-priority=0x10')
-    '''
-
     # Jack
     # Install dummy rules
     switch = net.nameToNode["s1001"]
     for rule in topo.dummy_rules:
         result = switch.cmd(rule)
         print "Installing dummy rule: %s, returns: " % rule, result
-    
+
+    # Install edge rules
+    for rule in topo.edge_rules:
+        result = switch.cmd(rule)
+        print "Installing edge rule: %s, returns: " % rule, result
+
+    '''
+    # Start HTTP servers
+    for hostName in topo.hosts():
+        host = net.nameToNode[hostName]
+        cmd = "python -m SimpleHTTPServer &"
+        result = host.cmd(cmd)
+        if len(result) != 0:
+            raise Exception("error")
+        print "Starting HTTP server: %s, returns: #%s#" % (cmd, result)
+    '''
+
     # Jack
     # Customize traffic
     if traffic:
         traffics = {}
         traffics["171.64.64.64"] = "01:00:00:00:00:01"      # cs.stanford.edu
         traffics["74.125.226.78"] = "01:00:00:00:00:02"     # google.com
+        traffics["157.166.226.26"] = "01:00:00:00:00:03"    # cnn.com
+        traffics["171.64.60.12"] = "01:00:00:00:00:04"      # bio.stanford.edu
+        traffics['74.125.228.85'] = "01:00:00:00:00:05"     # gmail.com
 
     # Jack
     # Prepare hosts
@@ -302,9 +326,10 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
                     raise Exception("error")
                 print "Setting up static ARP: %s, returns: %s" % (cmd, result)
                 # Initiate ping traffic
-                cmd = "ping %s &" % ip
-                result = host.cmd(cmd)
-                print "Traffic: %s, returns: %s" % (cmd, result)
+                for i in range(5):
+                    cmd = "taskset -c 2 ping %s &" % ip
+                    result = host.cmd(cmd)
+                    print "Traffic: %s, returns: %s" % (cmd, result)
 
     CLI( net )
     net.stop()
@@ -330,25 +355,11 @@ if __name__ == '__main__':
                    const=True, default=False,
                    help='Extrapolate edge networks (default: false)')
 
-    # Jack: discard dummy controller parameters
-    '''
-    parser.add_argument("-c2", dest="dummy_controller_name",
-                      default="localhost",
-                      help="Dummy controller's hostname or IP")
-    parser.add_argument("-p2", dest="dummy_controller_port",type=int,
-                      default=6633,
-                      help="Dummy ontroller's port")
-    '''
-
     args = parser.parse_args()
     print description
     print "Starting with controller: %s:%d, traffic generator: %r, edge extrapolation: %r" % (args.controller_name, args.controller_port, args.traffic, args.edge)
 
     # Jack
-    #print "Starting with dummy controller %s:%d" % (args.dummy_controller_name, args.dummy_controller_port)
-    #topo = StanfordTopo()
     Mininet.init()
     StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, args.traffic, args.edge)
-    # Jack
-    # StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, gethostbyname(args.dummy_controller_name), args.dummy_controller_port)
 
