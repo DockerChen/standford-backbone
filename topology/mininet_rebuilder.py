@@ -43,6 +43,8 @@ class StanfordTopo( Topo ):
     SWITCH_ID_MULTIPLIER = 100000
     
     DUMMY_SWITCH_BASE = 1000
+    # Jack
+    EDGE_SWITCH_BASE = 2000
     
     PORT_MAP_FILENAME = "data/port_map.txt"
     TOPO_FILENAME = "data/backbone_topology.tf"
@@ -50,8 +52,10 @@ class StanfordTopo( Topo ):
     dummy_switches = set()
     # Jack
     dummy_rules = list()
+    edge_switch_count = 0
+    edge_host_count = 0
 
-    def __init__( self ):
+    def __init__(self, edge):
         # Read topology info
         ports = self.load_ports(self.PORT_MAP_FILENAME)
         links = self.load_topology(self.TOPO_FILENAME)
@@ -75,15 +79,40 @@ class StanfordTopo( Topo ):
             # Edge ports
             for port in ports[s]:
                 # Jack
-                print "add_host(): h%s" % host_id
-                self.addHost( "h%s" % host_id )
-                print "add_link(): nodes h%s to s%s, ports %d to %d (host)" % (host_id, s, 0, port)
-                self.addLink( "h%s" % host_id, "s%s" % s, 0, port )
-                host_id += 1
+                if edge:
+                    # Add edge network
+                    backbone_switch_id, backbone_port = self.create_edge_network()
+                    # Connect edge network to backbone
+                    print "add_link(): nodes s%s to s%s, ports %d to %d (backbone)" % (backbone_switch_id, s, backbone_port, port)
+                    self.addLink( "s%s" % backbone_switch_id, "s%s" % s, backbone_port, port )
+                else:
+                    print "add_host(): h%s" % host_id
+                    self.addHost( "h%s" % host_id )
+                    # Connect host to backbone
+                    print "add_link(): nodes h%s to s%s, ports %d to %d (backbone)" % (host_id, s, 0, port)
+                    self.addLink( "h%s" % host_id, "s%s" % s, 0, port )
+                    host_id += 1
 
         # Consider all switches and hosts 'on'
         # self.enable_all()
-            
+
+    def create_edge_network(self):
+        # Add switch
+        self.edge_switch_count += 1
+        s = "%d" % (self.edge_switch_count + self.EDGE_SWITCH_BASE)
+        print "add_switch(): s%s" % s
+        self.addSwitch( "s%s" % s )
+        # Add host
+        self.edge_host_count += 1
+        h = "%s" % self.edge_host_count
+        print "add_host(): h%s" % h
+        self.addHost( "h%s" % h )
+        # Link
+        # Connect host to backbone
+        print "add_link(): nodes h%s to s%s, ports %d to %d (backbone)" % (h, s, 0, 1)
+        self.addLink( "h%s" % h, "s%s" % s, 0, 1)
+        return s, 2
+
     def load_ports(self, filename):
         ports = {}
         f = open(filename, 'r')
@@ -197,11 +226,11 @@ class StanfordMininet ( Mininet ):
 # Jack
 # Discard dummy controller parameters
 # def StanfordTopoTest( controller_ip, controller_port, dummy_controller_ip, dummy_controller_port ):
-def StanfordTopoTest( controller_ip, controller_port ):
-    topo = StanfordTopo()
+def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
+    topo = StanfordTopo(edge)
 
     main_controller = lambda a: RemoteController( a, ip=controller_ip, port=controller_port)
-    net = StanfordMininet( topo=topo, switch=OVSKernelSwitch, controller=main_controller)
+    net = StanfordMininet(topo=topo, switch=OVSKernelSwitch, controller=main_controller)
     
     net.start()
 
@@ -243,6 +272,13 @@ def StanfordTopoTest( controller_ip, controller_port ):
         print "Installing dummy rule: %s, returns: " % rule, result
     
     # Jack
+    # Customize traffic
+    if traffic:
+        traffics = {}
+        traffics["171.64.64.64"] = "01:00:00:00:00:01"      # cs.stanford.edu
+        traffics["74.125.226.78"] = "01:00:00:00:00:02"     # google.com
+
+    # Jack
     # Prepare hosts
     for hostName in topo.hosts():
         host = net.nameToNode[hostName]
@@ -253,17 +289,22 @@ def StanfordTopoTest( controller_ip, controller_port ):
         if len(result) != 0:
             raise Exception("error")
         print "Setting up default route: %s, returns: #%s#" % (cmd, result)
-        # Set static ARP protocol
-        # Otherwise needs to setup ARP
-        cmd = "arp -s 171.64.64.64 01:00:00:00:00:23"
-        result = host.cmd(cmd)
-        if len(result) != 0:
-            raise Exception("error")
-        print "Setting up static ARP: %s, returns: %s" % (cmd, result)
-        # Initiate ping traffic
-        cmd = "ping 171.64.64.64 &"
-        result = host.cmd(cmd)
-        print "Traffic: %s, returns: %s" % (cmd, result)
+
+        # Setup traffic
+        if traffic:
+            for ip in traffics.keys():
+                 # Set static ARP protocol
+                # Otherwise needs to setup ARP
+                mac = traffics[ip]
+                cmd = "arp -s %s %s" % (ip, mac)
+                result = host.cmd(cmd)
+                if len(result) != 0:
+                    raise Exception("error")
+                print "Setting up static ARP: %s, returns: %s" % (cmd, result)
+                # Initiate ping traffic
+                cmd = "ping %s &" % ip
+                result = host.cmd(cmd)
+                print "Traffic: %s, returns: %s" % (cmd, result)
 
     CLI( net )
     net.stop()
@@ -282,6 +323,12 @@ if __name__ == '__main__':
     parser.add_argument("-p", dest="controller_port",type=int,
                       default=7733,
                       help="Controller's port")
+    parser.add_argument('-t', dest='traffic', action='store_const',
+                   const=True, default=False,
+                   help='Generate traffic (default: false)')
+    parser.add_argument('-e', dest='edge', action='store_const',
+                   const=True, default=False,
+                   help='Extrapolate edge networks (default: false)')
 
     # Jack: discard dummy controller parameters
     '''
@@ -295,12 +342,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     print description
-    print "Starting with primary controller %s:%d" % (args.controller_name, args.controller_port)
+    print "Starting with controller: %s:%d, traffic generator: %r, edge extrapolation: %r" % (args.controller_name, args.controller_port, args.traffic, args.edge)
+
     # Jack
     #print "Starting with dummy controller %s:%d" % (args.dummy_controller_name, args.dummy_controller_port)
-    topo = StanfordTopo()
+    #topo = StanfordTopo()
     Mininet.init()
-    StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port)
+    StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, args.traffic, args.edge)
     # Jack
     # StanfordTopoTest(gethostbyname(args.controller_name), args.controller_port, gethostbyname(args.dummy_controller_name), args.dummy_controller_port)
 
