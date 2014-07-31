@@ -14,5 +14,6 @@ with open(inputFile) as f:
                     ports = token.strip().split(":")
                     # Tweak to avoid memory crash
                     # Should end up with 48 switches
-                    if ports[0].endswith("eth1") or ports[0].endswith("eth2") or ports[0].endswith("eth3"):
-                    	print ports[0]
+                    # if ports[0].endswith("eth1") or ports[0].endswith("eth2") or ports[0].endswith("eth3"):
+                    # 	print ports[0]
+                    print ports[0]

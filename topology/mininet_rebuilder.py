@@ -237,20 +237,20 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
     # Jack
     # Dummy controller not used
     # Instead use ovs-ofctl to install pre-computed dummy rules
-    '''
     # These switches should be set to a local controller..
+    dummy_controller_ip = "127.0.0.1"
+    dummy_controller_port = 8833
     dummy_switches = topo.dummy_switches
     dummyClass = lambda a: RemoteController( a, ip=dummy_controller_ip, port=dummy_controller_port)
     dummy_controller = net.addController( name='dummy_controller', controller=dummyClass)
     dummy_controller.start()
-    
+
     for dpid in dummy_switches:
         switch = net.nameToNode["s%s" % dpid]
         # Jack
         # switch.pause()
         switch.start( [dummy_controller] )
-    '''
-
+    
     # Jack
     # STP truned off
     # Otherwise, dummy ports might be down, causing connectivity problem

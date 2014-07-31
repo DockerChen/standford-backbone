@@ -33,9 +33,9 @@ def simpleTest():
     h1 = net.get('h1')
     h2 = net.get('h2')
     h1.setIP( '192.168.1.1/24' )
-    print h1.IP()                                                                                         
+    print h1.IP()
     h2.setIP( '192.168.1.2/24' )
-    print h2.IP()                                                                                 
+    print h2.IP()
     net.start()
     print "Dumping host connections"
     dumpNodeConnections(net.hosts)
