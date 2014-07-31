@@ -22,8 +22,8 @@
 ## Ping Google
 * Prepare h197 to initiate ICMP traffic to Google (74.125.226.78).
 * Probe the path
-  ** Use the [topology information](https://github.com/wuyangjack/standford-backbone/blob/master/topology/net.txt) to figure out peering ports.
-  ** See what flow table entries are being matched by invert matching: `sudo ovs-ofctl dump-flows s13 | grep -v n_packets=0`
+  * Use the [topology information](https://github.com/wuyangjack/standford-backbone/blob/master/topology/net.txt) to figure out peering ports.
+  * See what flow table entries are being matched by invert matching: `sudo ovs-ofctl dump-flows s13 | grep -v n_packets=0`
 * The path of Google traffic: 
   ** `h197-eth0 > s13-eth9 > s13-eth1 > s1005-eth4 > s1005-eth1 > s2-eth13 > s2-eth4 > s1009-eth1 > s1009-eth2(s1009-eth3) > s3-eth1(s12-eth9) > s3-eth7(s12-eth1) > h67-eth0(s1007-eth3) > (s1007-eth1) > (s1-eth1) > (s1-eth4) > (h18-eth0)`
   8* It seems that the traffic is forwarded to two destinations. One is a border router (s1 is the bbra_rtr). Another is an operational zone router (s3 is boza_rtr).
@@ -32,7 +32,7 @@
 * Prepares h197 to initiate ICMP traffic to `stanford.cs.edu` (171.64.64.64).
 * Probe the path: `h197-eth0 > s13-eth9 > s13-eth6 > s1006-eth3 > s1006-eth1 > s1-eth32 > s1-eth22 > h33-eth0`.
 * Inject fault: 
-  ** Add a dropping rule by `sudo ovs-ofctl add-flow s1 dl_type=0x0800,nw_dst=171.64.64.64/32,priority=65535,actions=`
-  ** The previous traffic will be dropped. Run `sudo tcpdump -i s1-eth32 -nS` you should still see traffic. However, run `sudo tcpdump -i s1-eth22 -nS`, and you should not see traffic. Bascically, traffic is dropped at s1.
+  * Add a dropping rule by `sudo ovs-ofctl add-flow s1 dl_type=0x0800,nw_dst=171.64.64.64/32,priority=65535,actions=`
+  * The previous traffic will be dropped. Run `sudo tcpdump -i s1-eth32 -nS` you should still see traffic. However, run `sudo tcpdump -i s1-eth22 -nS`, and you should not see traffic. Bascically, traffic is dropped at s1.
 
 
