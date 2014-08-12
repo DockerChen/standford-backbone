@@ -34,5 +34,9 @@
 * Inject fault: 
   * Add a dropping rule by `sudo ovs-ofctl add-flow s1 dl_type=0x0800,nw_dst=171.64.64.64/32,priority=65535,actions=`
   * The previous traffic will be dropped. Run `sudo tcpdump -i s1-eth32 -nS` you should still see traffic. However, run `sudo tcpdump -i s1-eth22 -nS`, and you should not see traffic. Bascically, traffic is dropped at s1.
-
-
+  * If we dumped the traffic at at s1-eth22 ([pcap](https://github.com/wuyangjack/standford-backbone/blob/master/topology/data/s1-eth22.pcap)), we can see that traffic stops at the 58173th packet. We could filter the time interval by  `editcap -A "2014-8-11 13:51:28" -B "2014-8-11 13:52:00" s1-eth22.pcap time.pcap`. `time tshark -r time.pcap -R "(icmp and ip.src!=10.0.0.17)"`
+  * If we dumped roughly 5 minutes of traffic (roughly 25 GB of headers): 
+    * Status at core access router port s1-eth22. The traffic is missing for 2 minutes. First, we filter the traffic: `time editcap -A "2014-8-11 22:27:00" -B "2014-8-11 22:30:00" s1-eth22.pcap ~/time.pcap` (0.114 seconds). Also this returns nothing: `time tshark -r ~/time.pcap -Y "(icmp and ip.src!=10.0.0.17)" (0.151 seconds)`.
+    * Similarly at edge access switch ports s2017-eth2 and s2017-eth1. These also takes roughly 0.3 seconds.
+    * Status at core access router ports s1-eth32. Still, `time editcap -A "2014-8-11 22:27:00" -B "2014-8-11 22:30:00" s1-eth32.pcap ~/time.pcap` (0.24 seconds). Then yhis doesn't return nothing: `time tshark -r ~/time.pcap -Y "(icmp and ip.src!=10.0.0.17)" -w ~/tmp.pcap` (0.7 seconds).
+    * To check all ports similar to s1-eth32. It would roughly require (estimated by 7x packet size): 7 seconds.
