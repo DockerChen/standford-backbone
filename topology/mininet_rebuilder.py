@@ -83,7 +83,7 @@ class StanfordTopo( Topo ):
             # Edge ports
             for port in ports[s]:
                 # Jack
-                if edge:
+                if edge and s == 1:
                     # Add edge network
                     backbone_switch_id, backbone_port = self.create_edge_network()
                     # Connect edge network to backbone
@@ -118,8 +118,8 @@ class StanfordTopo( Topo ):
         print "add_link(): nodes h%s to s%s, ports %d to %d (backbone)" % (h, s, 0, 1)
         self.addLink( "h%s" % h, "s%s" % s, 0, 1)
         # Append edge rules
-        outflow = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=1,actions=output:2" % (s)
-        inflow = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=2,actions=output:1" % (s)
+        outflow = "sudo ovs-ofctl add-flow s%s idle_timeout=0,hard_timeout=0,dl_type=0x0800,in_port=1,actions=output:2" % (s)
+        inflow = "sudo ovs-ofctl add-flow s%s idle_timeout=0,hard_timeout=0,dl_type=0x0800,in_port=2,actions=output:1" % (s)
         self.edge_rules.append(outflow)
         self.edge_rules.append(inflow)
         # Return
@@ -219,10 +219,10 @@ class StanfordTopo( Topo ):
         
      # Jack
     def generate_dummy_rules(self, dummy_switch_id, port_count):
-        ingress = "sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=1,actions=" % (dummy_switch_id)
+        ingress = "sudo ovs-ofctl add-flow s%s idle_timeout=0,hard_timeout=0,dl_type=0x0800,in_port=1,actions=" % (dummy_switch_id)
         for dst_port in range(2, port_count + 2):
             ingress += "output:%d," % dst_port
-            self.dummy_rules.append("sudo ovs-ofctl add-flow s%s dl_type=0x0800,in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
+            self.dummy_rules.append("sudo ovs-ofctl add-flow s%s idle_timeout=0,hard_timeout=0,dl_type=0x0800,in_port=%d,actions=output:1" % (dummy_switch_id, dst_port))
         ingress = ingress[:-1]
         self.dummy_rules.append(ingress)
 
@@ -243,7 +243,7 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
     
     topo = StanfordTopo(edge)
 
-    dummy_controller = RemoteController("dummy_controller", ip="127.0.0.1", port=8833)
+    dummy_controller = RemoteController("dummy_controller", ip="127.0.0.1", port=7733)
     main_controller = RemoteController("main_controller", ip=controller_ip, port=controller_port)
 
     cmap = {}
@@ -271,15 +271,20 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
     
     # Jack
     # Install dummy rules
+    #f = open('rules.txt','w')
     switch = net.nameToNode["s1001"]
     for rule in topo.dummy_rules:
+        #f.write(rule + '\n')
         result = switch.cmd(rule)
         print "Installing dummy rule: %s, returns: " % rule, result
 
     # Install edge rules
     for rule in topo.edge_rules:
+        #f.write(rule + '\n')
         result = switch.cmd(rule)
         print "Installing edge rule: %s, returns: " % rule, result
+    #f.close()
+    #return
 
     '''
     # Start HTTP servers

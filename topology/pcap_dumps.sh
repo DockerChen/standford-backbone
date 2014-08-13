@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Read hosts
-hosts=$(python ./pcap_interfaces.py)
+hosts=$(python ./pcap_interfaces_all.py)
 
 # Prepare directory
 pcaps="./pcaps"
