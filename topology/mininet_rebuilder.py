@@ -332,7 +332,7 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
                 print "Setting up static ARP: %s, returns: %s" % (cmd, result)
                 # Initiate ping traffic
                 for i in range(5):
-                    cmd = "taskset -c 2 ping %s &" % ip
+                    cmd = "ping -i 0.2 %s &" % ip
                     result = host.cmd(cmd)
                     print "Traffic: %s, returns: %s" % (cmd, result)
 

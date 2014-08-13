@@ -3,6 +3,6 @@
 while true
 do
 	date
-	ls -lh samples/
+	ls -l --block-size=M samples/
 	sleep 2
 done
