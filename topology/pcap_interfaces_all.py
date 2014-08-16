@@ -2,7 +2,7 @@
 
 "Get all interfaces that needs to be tcpdumped"
 
-inputFile = "./net.txt"
+inputFile = "./net_all.txt"
 
 # Scan for nodes and edges
 with open(inputFile) as f:

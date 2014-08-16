@@ -42,4 +42,4 @@
     * No packet at s1-eth22 (0.49 + 0.11 = 0.60 second).
     * Packet at s1-eth32 (0.82 + 0.22 = 1.04 second).
     * Packet at other interfaces at s1 (estimated 6x more traffic, so 1.04 * 6 = 6.24 second).
-    * Total pcap query latency is roughly 10 seconds.
+    * Total pcap query latency is roughly 10 seconds. We touched roughly 15% of all the captured pcap traces.

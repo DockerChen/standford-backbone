@@ -83,7 +83,7 @@ class StanfordTopo( Topo ):
             # Edge ports
             for port in ports[s]:
                 # Jack
-                if edge and s == 1:
+                if edge:
                     # Add edge network
                     backbone_switch_id, backbone_port = self.create_edge_network()
                     # Connect edge network to backbone
@@ -243,6 +243,18 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
     
     topo = StanfordTopo(edge)
 
+    '''
+    # Print edge and dummy rules
+    f = open('rules.txt','w')
+    for rule in topo.dummy_rules:
+        f.write(rule + '\n')
+
+    for rule in topo.edge_rules:
+        f.write(rule + '\n')
+    f.close()
+    return
+    '''
+    
     dummy_controller = RemoteController("dummy_controller", ip="127.0.0.1", port=7733)
     main_controller = RemoteController("main_controller", ip=controller_ip, port=controller_port)
 
@@ -271,20 +283,15 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
     
     # Jack
     # Install dummy rules
-    #f = open('rules.txt','w')
     switch = net.nameToNode["s1001"]
     for rule in topo.dummy_rules:
-        #f.write(rule + '\n')
         result = switch.cmd(rule)
         print "Installing dummy rule: %s, returns: " % rule, result
 
     # Install edge rules
     for rule in topo.edge_rules:
-        #f.write(rule + '\n')
         result = switch.cmd(rule)
         print "Installing edge rule: %s, returns: " % rule, result
-    #f.close()
-    #return
 
     '''
     # Start HTTP servers
@@ -332,7 +339,8 @@ def StanfordTopoTest( controller_ip, controller_port, traffic, edge):
                 print "Setting up static ARP: %s, returns: %s" % (cmd, result)
                 # Initiate ping traffic
                 for i in range(5):
-                    cmd = "ping -i 0.2 %s &" % ip
+                    cmd = "ping %s &" % ip
+                    #cmd = "ping -i 0.2 %s &" % ip
                     result = host.cmd(cmd)
                     print "Traffic: %s, returns: %s" % (cmd, result)
 
