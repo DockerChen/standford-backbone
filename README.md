@@ -1,8 +1,3 @@
-## Authors
-* Yang (Jack) Wu (yangwu6@cis.upenn.edu)
-* James Hongyi Zeng (hyzeng_at_stanford.edu)
-* Peyman Kazemian (kazemian_at_stanford.edu)
-
 ## Getting Started
 * The idea is to route ICMP traffic in the emulated Stanford-backbone network.
 * Follow the [configuration instructions](https://github.com/wuyangjack/standford-backbone/blob/master/configuration/Notes.md) to generated the necessary OpenFlow rules (translated from the Stanford-backbone network). 
